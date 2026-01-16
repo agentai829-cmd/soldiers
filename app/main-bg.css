@@ -1,0 +1,7 @@
+/* Main Page Background */
+.main-page-bg {
+  background: #000000;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}

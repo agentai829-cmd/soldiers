@@ -1,0 +1,56 @@
+SINTRA CLONE - ACTIVE/VISIBLE AGENTS (10)
+=====================================================
+
+1. Bob (Business Development / Buzz Builder)
+   Prompt ID: pmpt_6917a79605708193932c1d844061f44d0b376efe8da58cb0
+   Version: 47
+   Status: ACTIVE
+
+2. Lisa (Pitch Bot / Loyalty)
+   Prompt ID: pmpt_691b81c4ce748195adfe199424710f250cd44242c1968a71
+   Version: 2
+   Status: ACTIVE
+
+3. Ricky (Growth Bot / Reputation)
+   Prompt ID: pmpt_691b921aa57c8197a13b1b3565e087b70caf3038b6a9f342
+   Version: 3
+   Status: ACTIVE
+
+4. Emma (Strategy Adviser / Search Engine)
+   Prompt ID: pmpt_691ba6452a6c8194802637d1f034ede2027d4d2d8fcd4aed
+   Version: 1
+   Status: ACTIVE
+
+5. Sarah (Copywriting / Local Celebrity)
+   Prompt ID: pmpt_691baa8055388196bde0c5b1063f66d60b747475243186d5
+   Version: 1
+   Status: ACTIVE
+
+6. Carl (App & Product Planner / Competition Crusher)
+   Prompt ID: pmpt_691ba6f8f624819785a227657ce2661905f809f68c987d01
+   Version: 1
+   Status: ACTIVE - LOCKED
+
+7. Paul (Developer / Profit Maximizer)
+   Prompt ID: pmpt_691ba6f8f624819785a227657ce2661905f809f68c987d01
+   Version: 1
+   Status: ACTIVE
+
+8. Olivia (Project Manager / Offer Fixer)
+   Prompt ID: pmpt_691ba96827548190b23fae89b54a56b40ad758d880fe510b
+   Version: 1
+   Status: ACTIVE
+
+9. Wendy (Web Designer / Customer Whisperer)
+   Prompt ID: pmpt_691baa3ce27881939a1bdebf35a4fed808e80acd47d96bbb
+   Version: 1
+   Status: ACTIVE
+
+10. Dave (Social Media / Local Dominance)
+    Prompt ID: pmpt_691baa9ba85c8194a0b67f04a1988f2e0801a2af70fbc71a
+    Version: 1
+    Status: ACTIVE
+
+=====================================================
+Total Active Agents: 10
+Note: Carl has a lock icon and grayscale effect on hover

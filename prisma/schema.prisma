@@ -1,0 +1,422 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+
+generator client {
+  provider      = "prisma-client-js"
+  // binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  // url        = env("DATABASE_URL")
+  
+}
+
+enum PaymentStatus {
+  SUCCEEDED
+  PENDING
+  FAILED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  TRIALING
+  UNPAID
+}
+
+enum CurrentPlanName {
+  MONTHLY
+  YEARLY
+  BUNDLE
+  LIFETIME
+}
+
+enum MemberRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum DocSourceType {
+  FILE
+  URL
+  MANUAL
+  INTEGRATION
+}
+
+enum AutomationStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum SocialProvider {
+  FACEBOOK
+  INSTAGRAM
+  LINKEDIN
+  TWITTER
+}
+
+enum EmailProvider {
+  GMAIL
+  OUTLOOK
+  SMTP
+}
+
+
+
+enum JobType {
+  GENERATE_POST
+  POST_SOCIAL
+  SEND_EMAIL
+  SYNC_EMAILS
+  PROCESS_WEBHOOK
+  GENERATE_EMBEDDINGS
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  RETRYING
+}
+
+enum PlanName {
+  MONTHLY
+  YEARLY
+  BUNDLE
+}
+
+model User {
+  id                String      @id @default(cuid())
+  clerkId           String      @unique
+  email             String      @unique
+  name              String?
+  imageUrl          String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  // // Subscription fields
+  // stripeCustomerId      String?   @unique
+  // stripeSubscriptionId  String?   @unique
+  // stripePriceId         String?
+  // subscriptionStatus    SubscriptionStatus @default(UNPAID)
+  // currentPlanName       CurrentPlanName?
+  // subscriptionStartDate DateTime?
+  // subscriptionEndDate   DateTime?
+  // cancelAtPeriodEnd     Boolean   @default(false)
+  
+  members           Member[]
+
+  @@map("users")
+}
+
+
+model Member {
+  id          String     @id @default(cuid())
+  role        MemberRole @default(VIEWER)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  userId      String
+  workspaceId String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@map("members")
+}
+
+model Helper {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  prompt      String
+  config      Json?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("helpers")
+}
+
+model Conversation {
+  id          String    @id @default(cuid())
+  title       String?
+  userId      String
+  archived    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  helperId    String
+  messages    Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  role           String
+  content        String
+  metadata       Json?
+  messageOrder   Int
+  imageUrl       String?
+  attachments    Json?
+  createdAt      DateTime     @default(now())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+// CREATE EXTENSION IF NOT EXISTS vector;
+
+// SELECT extname, extversion
+// FROM pg_extension
+// WHERE extname = 'vector';
+
+
+model KnowledgeDoc {
+  id          String        @id @default(cuid())
+  title       String
+  content     String
+  sourceUrl   String?
+  userId      String
+  // User Clerk Id
+  sourceType  DocSourceType @default(MANUAL)
+  metadata    Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  embeddings  Embedding[] // Temporarily disabled
+
+  @@map("knowledge_docs")
+}
+
+// Temporarily disabled - requires pgvector extension
+model Embedding {
+  id             String                @id @default(cuid())
+  content        String
+  vector         Unsupported("vector")?
+  metadata       Json?
+  createdAt      DateTime              @default(now())
+  knowledgeDocId String
+  knowledgeDoc   KnowledgeDoc          @relation(fields: [knowledgeDocId], references: [id], onDelete: Cascade)
+  @@map("embeddings")
+}
+
+model Automation {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  trigger     Json
+  actions     Json
+  enabled     Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  runs        AutomationRun[]
+
+  @@map("automations")
+}
+
+model AutomationRun {
+  id           String           @id @default(cuid())
+  status       AutomationStatus @default(PENDING)
+  result       Json?
+  error        String?
+  runAt        DateTime         @default(now())
+  completedAt  DateTime?
+  automationId String
+  automation   Automation       @relation(fields: [automationId], references: [id], onDelete: Cascade)
+
+  @@map("automation_runs")
+}
+
+model SocialAccount {
+  id                    String         @id @default(cuid())
+  provider              SocialProvider
+  providerAccountId     String
+  accessTokenEncrypted  String
+  refreshTokenEncrypted String?
+  expiresAt             DateTime?
+  scope                 String?
+  isActive              Boolean        @default(true)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@map("social_accounts")
+}
+
+model EmailAccount {
+  id                   String        @id @default(cuid())
+  provider             EmailProvider @default(GMAIL)
+  email                String
+  oauthTokensEncrypted String?
+  smtpConfig           Json?
+  imapConfig           Json?
+  isActive             Boolean       @default(true)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  emails               Email[]
+
+  @@map("email_accounts")
+}
+
+model Email {
+  id             String       @id @default(cuid())
+  messageId      String       @unique
+  threadId       String?
+  subject        String
+  from           String
+  to             String[]
+  cc             String[]     @default([])
+  bcc            String[]     @default([])
+  body           String
+  isRead         Boolean      @default(false)
+  isReplied      Boolean      @default(false)
+  labels         String[]     @default([])
+  attachments    Json?
+  receivedAt     DateTime
+  createdAt      DateTime     @default(now())
+  emailAccountId String
+  emailAccount   EmailAccount @relation(fields: [emailAccountId], references: [id], onDelete: Cascade)
+
+  @@map("emails")
+}
+
+enum PlanType {
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+  SINGLE
+  SOLDIERSX
+}
+
+enum Interval {
+  MONTH
+  YEAR
+  LIFETIME
+}
+
+model UnlockSoldiers {
+  id                    String              @id @default(cuid())
+  unlockedSoldiers      String[]
+  billingSubscriptionId String
+  billingSubscription   BillingSubscription @relation(fields: [billingSubscriptionId], references: [id], onDelete: Cascade)
+  clerkId               String
+  currentPeriodStart    DateTime
+  currentPeriodEnd      DateTime
+  interval              Interval @default(MONTH)
+  stripeCustomerId      String?
+  stripeSubscriptionId  String             @unique
+  stripePriceId         String?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+}
+
+model BillingSubscription {
+  id                   String             @id @default(cuid())
+  planId               String
+  planType             PlanType @default(STARTER)
+  interval             Interval @default(MONTH)
+  stripeCustomerId     String?
+  stripeSubscriptionId String             @unique
+  stripePriceId        String?
+  unlockedSoldiers     UnlockSoldiers[]
+  status               SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  email                String   @unique
+  clerkId              String   @unique
+  updatedAt            DateTime           @updatedAt
+
+  @@map("billing_subscriptions")
+}
+
+model JobLog {
+  id          String    @id @default(cuid())
+  type        JobType
+  payload     Json
+  status      JobStatus @default(PENDING)
+  result      Json?
+  error       String?
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("job_logs")
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  type        NotificationType
+  title       String
+  message     String
+  metadata    Json?
+  isRead      Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  userId      String?
+  helperId    String?
+  relatedId   String?          // For linking to conversations, knowledge docs, etc.
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  WELCOME
+  KNOWLEDGE_ADDED
+  KNOWLEDGE_SUGGESTION
+  HELPER_SUGGESTION
+  CONVERSATION_UPDATE
+  SYSTEM_UPDATE
+  TODO_ITEM
+  BRAIN_INSIGHT
+}
+
+
+
+model Payment {
+  id                String   @id @default(cuid())
+  email             String
+  clerkId           String
+  stripeCustomerId  String?  @unique
+  stripeSessionId   String?  @unique
+  amount            Int      // Amount in cents
+  currency          String   @default("usd")
+  status            PaymentStatus @default(SUCCEEDED)
+  paymentIntentId   String?  @unique
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("payments")
+}
+
+model PendingPayment {
+  id                      String @id @default(cuid())
+  emailAddress            String
+  paymentIntent           String
+  planId                  String
+  planType                String
+  subscriptionId          String
+  stripeSessionId         String
+  totalAmount             Int
+  customerId              String
+  currency                String
+  unlockedAgents          String[]
+  priceId                 String
+  subscriptionStartDate   DateTime
+  subscriptionEndDate     DateTime
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+}

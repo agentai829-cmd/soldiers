@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Debug Helper</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 { color: #333; margin-top: 0; }
+        h2 { color: #666; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        .step {
+            background: #e8f5e9;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+            border-radius: 4px;
+        }
+        .url {
+            background: #1976d2;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 16px;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+        .button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .button:hover { background: #45a049; }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .code {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Workspace Debug Helper</h1>
+        
+        <div class="success">
+            <strong>Database Status:</strong><br>
+            Workspace: test<br>
+            Subscription: ACTIVE<br>
+            Unlocked Soldiers: 10/10<br>
+            Expires: January 31, 2026
+        </div>
+
+        <h2>Direct Workspace URL</h2>
+        <div class="url">
+            http://localhost:3000/workspace/cmi9iqape0001m6ytnaz2c7sl
+        </div>
+        <button class="button" onclick="window.location.href='http://localhost:3000/workspace/cmi9iqape0001m6ytnaz2c7sl'">
+            Open Workspace Directly
+        </button>
+        <button class="button" onclick="window.location.href='http://localhost:3000/'">
+            Test Root Redirect
+        </button>
+
+        <h2>Fix Steps (In Order)</h2>
+        <div class="step">
+            <strong>Step 1: Clear Browser Cache</strong><br>
+            Press <strong>Ctrl + Shift + Delete</strong> → Select "All time" → Check "Cached images and files" → Clear
+        </div>
+        
+        <div class="step">
+            <strong>Step 2: Clear localStorage</strong><br>
+            Open DevTools (F12) → Console → Type:
+            <div class="code">localStorage.clear(); sessionStorage.clear();</div>
+        </div>
+        
+        <div class="step">
+            <strong>Step 3: Hard Refresh</strong><br>
+            Press <strong>Ctrl + Shift + R</strong> (Windows) or <strong>Cmd + Shift + R</strong> (Mac)
+        </div>
+        
+        <div class="step">
+            <strong>Step 4: Test Direct URL</strong><br>
+            Click "Open Workspace Directly" button above
+        </div>
+        
+        <div class="step">
+            <strong>Step 5: Test Root Redirect</strong><br>
+            Click "Test Root Redirect" button above
+        </div>
+
+        <h2>Expected Behavior</h2>
+        <ul>
+            <li>Opening http://localhost:3000/ redirects to /workspace</li>
+            <li>Workspace page checks subscription</li>
+            <li>Finds 10 unlocked soldiers</li>
+            <li>Redirects to workspace/cmi9iqape0001m6ytnaz2c7sl</li>
+            <li>Shows workspace page with all helpers</li>
+        </ul>
+
+        <h2>Debug in Browser Console</h2>
+        <div class="warning">
+            <strong>If still showing pricing page:</strong><br><br>
+            1. Press <strong>F12</strong> to open DevTools<br>
+            2. Go to <strong>Console</strong> tab<br>
+            3. Look for these logs:<br>
+            <div class="code">- "Workspaces fetched: 1"
+- "Subscription check"
+- "User has unlocked soldiers"
+- "Redirecting to workspace"</div>
+            4. If you see <strong>"No soldiers unlocked"</strong> then API problem<br>
+            5. If you see <strong>"Error checking subscription"</strong> then API error
+        </div>
+
+        <h2>Network Tab Check</h2>
+        <div class="step">
+            <strong>In DevTools Network Tab:</strong><br>
+            1. Clear network log<br>
+            2. Refresh page (Ctrl + Shift + R)<br>
+            3. Look for request: <strong>/api/workspace/cmi9iqape0001m6ytnaz2c7sl/subscription</strong><br>
+            4. Click on it → Preview tab<br>
+            5. Should show: <strong>{ unlockedSoldiers: [10 items] }</strong>
+        </div>
+
+        <h2>✅ Success Indicators</h2>
+        <ul class="checklist">
+            Success Indicators</h2>
+        <ulrkspace with helpers grid</li>
+            <li>All 10 soldiers visible and unlocked</li>
+            <li>No pricing page flash</li>
+        </ul>
+
+        <h2>Still Not Working?</h2>
+        <div class="warning">
+            Try these in order:
+            <ol>
+                <li><strong>Incognito Window:</strong> Ctrl + Shift + N and test in incognito</li>
+                <li><strong>Different Browser:</strong> Try Edge/Chrome/Firefox</li>
+                <li><strong>Restart Dev Server:</strong>
+                    <div class="code">Terminal: Ctrl + C
+Then: npm run dev</div>
+                </li>
+                <li><strong>Check API manually:</strong>
+                    <div class="code">Open: http://localhost:3000/api/workspace/cmi9iqape0001m6ytnaz2c7sl/subscription</div>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        console.log('Workspace Debug Helper Loaded');
+        console.log('Workspace ID: cmi9iqape0001m6ytnaz2c7sl');
+        console.log('Direct URL: http://localhost:3000/workspace/cmi9iqape0001m6ytnaz2c7sl');
+        console.log('Database has 10 unlocked soldiers');
+        console.log('Click buttons above to test redirects');
+    </script>
+</body>
+</html>

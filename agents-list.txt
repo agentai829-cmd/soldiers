@@ -1,0 +1,57 @@
+SINTRA CLONE - CURRENTLY VISIBLE AGENTS (10)
+=====================================================
+
+1. Bob (Buzz Builder)
+   Prompt ID: pmpt_6917a79605708193932c1d844061f44d0b376efe8da58cb0
+   Version: 47
+   Route: /chat/buddy
+
+2. Lisa (Loyalty / Pitch Bot)
+   Prompt ID: pmpt_691b81c4ce748195adfe199424710f250cd44242c1968a71
+   Version: 2
+   Route: /chat/pitch-bot
+
+3. Ricky (Reputation / Growth Bot)
+   Prompt ID: pmpt_691b921aa57c8197a13b1b3565e087b70caf3038b6a9f342
+   Version: 3
+   Route: /chat/growth-bot
+
+4. Emma (Search Engine / Strategy Adviser)
+   Prompt ID: pmpt_691ba6452a6c8194802637d1f034ede2027d4d2d8fcd4aed
+   Version: 1
+   Route: /chat/strategy-adviser
+
+5. Sarah (Local Celebrity / Copywriting)
+   Prompt ID: pmpt_691baa8055388196bde0c5b1063f66d60b747475243186d5
+   Version: 1
+   Route: /chat/penn
+
+6. Carl (Competition Crusher / App Planner) - LOCKED
+   Prompt ID: pmpt_691ba6f8f624819785a227657ce2661905f809f68c987d01
+   Version: 1
+   Route: /chat/builder-bot?preview=coming-soon
+
+7. Paul (Profit Maximizer / Developer)
+   Prompt ID: pmpt_691ba6f8f624819785a227657ce2661905f809f68c987d01
+   Version: 1
+   Route: /chat/dev-bot?preview=coming-soon
+
+8. Olivia (Offer Fixer / Project Manager)
+   Prompt ID: pmpt_691ba96827548190b23fae89b54a56b40ad758d880fe510b
+   Version: 1
+   Route: /chat/pm-bot
+
+9. Wendy (Customer Whisperer / Web Designer)
+   Prompt ID: pmpt_691baa3ce27881939a1bdebf35a4fed808e80acd47d96bbb
+   Version: 1
+   Route: /chat/commet?preview=coming-soon
+
+10. Dave (Local Dominance / Social Media)
+    Prompt ID: pmpt_691baa9ba85c8194a0b67f04a1988f2e0801a2af70fbc71a
+    Version: 1
+    Route: /chat/soshie
+
+=====================================================
+Total Visible Agents: 10
+Hidden Agents: 9 (Leo, Athena, Grace, Angelia, Felix, Iris, Ethan, Ava, Theo, Nadia, Orion, Sienna, Kai)
+Note: Carl has lock icon with grayscale effect

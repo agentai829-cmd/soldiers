@@ -1,0 +1,4 @@
+export const NEXT_PUBLIC_STRIPE_PUBLISHABLE = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''
+export const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || ''
+export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET_KEY || ''
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || ''
