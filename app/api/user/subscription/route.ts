@@ -45,19 +45,11 @@ export async function GET() {
       orderBy: {
         createdAt: 'desc',
       },
+      include:{
+        unlockedSoldiers: true
+      }
     })
 
-    console.log(
-      '💳 Subscription found:',
-      subscription
-        ? {
-            id: subscription.id,
-            status: subscription.status,
-            unlockedSoldiers: subscription.unlockedSoldiers,
-            planType: subscription.planType,
-          }
-        : 'NOT FOUND'
-    )
 
     if (!subscription) {
       return NextResponse.json({
@@ -69,6 +61,49 @@ export async function GET() {
     // Stripe API price may not match our bundle pricing logic
 
     // Format subscription data
+
+    // Map all unlocked soldiers name where expiry date is in the future
+    const now = new Date()
+// const initialsSoldiers = [
+//   "builder-bot",
+//   "dev-bot",
+//   "pm-bot",
+//   "commet",
+//   "soshie",
+// ]
+// const addOnsSoldiers = [
+//   "buddy",
+//   "pitch-bot",
+//   "growth-bot",
+//   "strategy-adviser",
+//   "penn",
+// ]
+
+const initialUnlockedSoldiers = subscription.unlockedSoldiers
+  .filter((soldier) => {
+    const validExpiry = soldier.currentPeriodEnd > now
+
+    const withoutAddOns = soldier.type === "WITHOUT_ADDONS"
+
+    return validExpiry && withoutAddOns
+  })
+  .flatMap((soldier) => soldier.unlockedSoldiers)
+
+const addOnUnlockedSoldiers = subscription.unlockedSoldiers
+  .filter((soldier) => {
+    const validExpiry = soldier.currentPeriodEnd > now
+
+    const withAddOns = soldier.type === "ADDONS"
+
+    return validExpiry  && withAddOns
+  })
+  .flatMap((soldier) => ({
+    addOnUnlockedSoldiers: soldier.unlockedSoldiers,
+    expiryDate: soldier.currentPeriodEnd,
+    interval: soldier.interval,
+  }))
+
+
     const subscriptionData = {
       id: subscription.id,
       planType: subscription.planType,
@@ -77,7 +112,8 @@ export async function GET() {
       currentPeriodEnd: subscription.currentPeriodEnd,
       stripeSubscriptionId: subscription.stripeSubscriptionId,
       stripeCustomerId: subscription.stripeCustomerId,
-      unlockedSoldiers: subscription.unlockedSoldiers || [],
+      unlockedSoldiers: initialUnlockedSoldiers || [],
+      addOnUnlockedSoldiers: addOnUnlockedSoldiers || [],
       createdAt: subscription.createdAt,
     }
 

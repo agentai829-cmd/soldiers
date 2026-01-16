@@ -689,11 +689,13 @@ export default function HomePage({ params }: HomePageProps) {
         </div>
 
         {/* Use Cases Section */}
+        {hasValidSubscription === "VALID" && (
         <UseCasesSection userId={params.userId} />
+        )}
 
         {/* Helpers Section */}
         <div className="mx-auto w-full max-w-4xl px-3 sm:px-4 md:px-6">
-          <div className="mb-4 flex items-center justify-between sm:mb-6 md:mb-8">
+          <div className="mb-4 flex items-center justify-between sm:mb-6 md:mb-6">
             <h2 className="text-lg font-bold text-white sm:text-xl md:text-2xl">
               Soldiers
             </h2>

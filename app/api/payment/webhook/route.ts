@@ -110,6 +110,7 @@ export async function POST(req: NextRequest) {
               subscriptionEndDate,
               unlockedAgents,
               priceId: subscription.items.data[0].price.id,
+              unlockedSoldiersType: "WITHOUT_ADDONS"
             })
           } else {
             await db.pendingPayment.create({
@@ -155,6 +156,7 @@ export async function POST(req: NextRequest) {
                 subscriptionEndDate,
                 unlockedAgents,
                 priceId: subscription.items.data[0].price.id,
+                unlockedSoldiersType: "WITHOUT_ADDONS"
               })
 
               console.log('💾 Payment saved to database for:', emailAddress)
@@ -173,19 +175,19 @@ export async function POST(req: NextRequest) {
               },
             })
             if (existingBilling) {
-              const prevUnlockedSoldiers = existingBilling?.unlockedSoldiers?.flatMap((item) => item.unlockedSoldiers) || []
-              let mergedSoldiers = [...prevUnlockedSoldiers, ...unlockedAgents]
-              let filteredRepeatedSoldiers: string[] = []
-              for (let i = 0; i < mergedSoldiers.length; i++) {
-                const soldier = mergedSoldiers[i]
-                if (!filteredRepeatedSoldiers.includes(soldier)) {
-                  filteredRepeatedSoldiers.push(soldier)
-                }
-              }
+              // const prevUnlockedSoldiers = existingBilling?.unlockedSoldiers?.flatMap((item) => item.unlockedSoldiers) || []
+              // let mergedSoldiers = [...prevUnlockedSoldiers, ...unlockedAgents]
+              // let filteredRepeatedSoldiers: string[] = []
+              // for (let i = 0; i < mergedSoldiers.length; i++) {
+              //   const soldier = mergedSoldiers[i]
+              //   if (!filteredRepeatedSoldiers.includes(soldier)) {
+              //     filteredRepeatedSoldiers.push(soldier)
+              //   }
+              // }
                 await db.unlockSoldiers.create({
     data:{
       billingSubscriptionId: existingBilling.id,
-      unlockedSoldiers: filteredRepeatedSoldiers,
+      unlockedSoldiers: unlockedAgents,
       clerkId: clerkUserId,
       currentPeriodStart: subscriptionStartDate,
       currentPeriodEnd: subscriptionEndDate,
@@ -193,6 +195,7 @@ export async function POST(req: NextRequest) {
       interval: planId === "LIFETIME" ? "LIFETIME" : planId === 'STARTER' ? 'MONTH' : 'YEAR',
       stripeCustomerId: customerId as string,
       stripePriceId: subscription.items.data[0].price.id,
+      type: "ADDONS"
     }
   })
             }

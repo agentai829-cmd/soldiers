@@ -98,7 +98,7 @@ export function UpgradeDialog({ isOpen, setIsOpen }: UpgradeDialogProps) {
           <div className="flex items-center gap-3 text-sm">
             <Zap className="h-4 w-4 flex-shrink-0 text-blue-500" />
             <span>
-              <strong>1 full year</strong> of unlimited usage
+              <strong>1 month year</strong> of unlimited usage
             </span>
           </div>
           <div className="flex items-center gap-3 text-sm">

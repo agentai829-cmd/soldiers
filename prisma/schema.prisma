@@ -84,6 +84,11 @@ enum JobType {
   GENERATE_EMBEDDINGS
 }
 
+enum UnlockSoldiersType {
+  WITHOUT_ADDONS
+  ADDONS
+}
+
 enum JobStatus {
   PENDING
   PROCESSING
@@ -309,6 +314,7 @@ model UnlockSoldiers {
   id                    String              @id @default(cuid())
   unlockedSoldiers      String[]
   billingSubscriptionId String
+  type                  UnlockSoldiersType @default(WITHOUT_ADDONS)
   billingSubscription   BillingSubscription @relation(fields: [billingSubscriptionId], references: [id], onDelete: Cascade)
   clerkId               String
   currentPeriodStart    DateTime

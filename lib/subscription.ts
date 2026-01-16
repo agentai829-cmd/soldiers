@@ -136,7 +136,8 @@ interface StoreStripePaymentInDB {
   unlockedAgents: string[]
   planType: string
   planId: 'STARTER' | 'PROFESSIONAL' | 'SINGLE' | 'SOLDIERSX' | 'LIFETIME'
-  priceId: string
+  priceId: string;
+    unlockedSoldiersType: "WITHOUT_ADDONS"  | "ADDONS"
 }
 
 export const storeStripePaymentInDB = async ({
@@ -154,6 +155,7 @@ export const storeStripePaymentInDB = async ({
   planId,
   planType,
   priceId,
+unlockedSoldiersType
 }: StoreStripePaymentInDB) => {
   await db.payment.create({
     data: {
@@ -199,7 +201,7 @@ export const storeStripePaymentInDB = async ({
       interval: planId === "LIFETIME" ? "LIFETIME" : planId === 'STARTER' ? 'MONTH' : 'YEAR',
     },
   })
-  await db.unlockSoldiers.createMany({
+  await db.unlockSoldiers.create({
     data:{
       billingSubscriptionId: billing.id,
       unlockedSoldiers: unlockedAgents,
@@ -210,6 +212,7 @@ export const storeStripePaymentInDB = async ({
       interval: planId === "LIFETIME" ? "LIFETIME" : planId === 'STARTER' ? 'MONTH' : 'YEAR',
       stripeCustomerId: customerId,
       stripePriceId: priceId,
+      type: unlockedSoldiersType === "WITHOUT_ADDONS" ? "WITHOUT_ADDONS" : "ADDONS",
     }
   })
 }

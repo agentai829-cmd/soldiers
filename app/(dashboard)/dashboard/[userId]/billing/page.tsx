@@ -15,6 +15,11 @@ interface Subscription {
   currentPeriodEnd: string
   stripeSubscriptionId: string
   unlockedSoldiers: string[]
+  addOnUnlockedSoldiers: {
+    addOnUnlockedSoldiers: string[];
+    expiryDate: Date;
+    interval: "MONTH" | "YEAR";
+  }[]
   createdAt: string
   price?: number
   currency?: string
@@ -245,10 +250,10 @@ export default function BillingPage() {
               You don't have an active subscription
             </p>
             <Button
-              onClick={() => router.push(`/workspace/${workspaceId}`)}
+              onClick={() => router.push(`/pricing/select`)}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              Go to Workspace
+              Get your subscription now
             </Button>
           </div>
         </div>
@@ -277,54 +282,77 @@ export default function BillingPage() {
             <div className="mb-3 rounded-lg bg-blue-900/30 p-4">
               <p className="mb-1 text-sm text-gray-400">Base Plan</p>
               <p className="text-2xl font-bold text-white">
-                {subscription.interval === 'year'
-                  ? 'Yearly Plan'
-                  : 'Monthly Plan'}
+                {subscription.interval === "LIFETIME" ? "Life Time Plan" : "Monthly Plan"}
               </p>
+              {subscription.interval === "LIFETIME" ? <>
               <p className="mt-1 text-lg font-semibold text-blue-400">
-                {subscription.interval === 'year' ? '$200/year' : '$20/month'}
+                $200
               </p>
+              </> : <>
+              <p className="mt-1 text-lg font-semibold text-blue-400">
+                {subscription.planType === 'PROFESSIONAL' ? '$40/month' : '$20/month'}
+              </p>
+              </>}
               <p className="mt-2 text-sm text-gray-400">
                 Bundle Soldiers (
                 {
-                  subscription.unlockedSoldiers.filter((s) =>
-                    [
-                      'buddy',
-                      'pitch-bot',
-                      'growth-bot',
-                      'dev-bot',
-                      'pm-bot',
-                    ].includes(s)
-                  ).length
+                  subscription?.unlockedSoldiers?.length || 0
                 }
                 )
               </p>
+              {subscription.interval !== "LIFETIME" &&  (
+                <>
+              <div className='h-[1px] w-full bg-white/20 rounded-full my-2' />
+               <p className="mb-1 text-sm text-gray-400">Next Renewal</p>
+              <p className="text-lg font-semibold text-white">
+                {new Date(subscription.currentPeriodEnd).toLocaleDateString(
+                  'en-US',
+                  {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }
+                )}
+              </p>
+                </>
+              )}
             </div>
 
             {/* Soldiers X Add-on (if present) */}
-            {subscription.unlockedSoldiers.some((s) =>
-              ['penn', 'soshie', 'seomi', 'milli', 'vizzy'].includes(s)
-            ) && (
-              <div className="mb-3 rounded-lg bg-yellow-900/30 p-4">
+            {subscription?.addOnUnlockedSoldiers?.length > 0 ? (
+                  <div className="mb-3 rounded-lg bg-yellow-900/30 p-4">
                 <p className="mb-1 text-sm text-gray-400">Add-on</p>
                 <p className="text-xl font-bold text-white">Soldiers X</p>
                 <p className="mt-1 text-lg font-semibold text-yellow-400">
-                  +$79/month
+                  {subscription.addOnUnlockedSoldiers[0].interval === "YEAR" ? "+$200/year" : "+$20/month"}
                 </p>
                 <p className="mt-2 text-sm text-gray-400">
                   Premium Soldiers (
                   {
-                    subscription.unlockedSoldiers.filter((s) =>
-                      ['penn', 'soshie', 'seomi', 'milli', 'vizzy'].includes(s)
-                    ).length
+                    subscription?.addOnUnlockedSoldiers?.[0]?.addOnUnlockedSoldiers?.length || 0
                   }
                   )
                 </p>
+                  <>
+              <div className='h-[1px] w-full bg-white/20 rounded-full my-2' />
+               <p className="mb-1 text-sm text-gray-400">Next Renewal</p>
+              <p className="text-lg font-semibold text-white">
+                {new Date(subscription.addOnUnlockedSoldiers[0].expiryDate).toLocaleDateString(
+                  'en-US',
+                  {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }
+                )}
+              </p>
+                </>
               </div>
-            )}
+            ) : null}
+         
 
             {/* Next Renewal */}
-            <div className="rounded-lg bg-gray-800 p-4">
+            {/* <div className="rounded-lg bg-gray-800 p-4">
               <p className="mb-1 text-sm text-gray-400">Next Renewal</p>
               <p className="text-lg font-semibold text-white">
                 {new Date(subscription.currentPeriodEnd).toLocaleDateString(
@@ -336,7 +364,7 @@ export default function BillingPage() {
                   }
                 )}
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* <>

@@ -24,7 +24,7 @@ export function UseCasesSection({ userId }: UseCasesSectionProps) {
         'Research my competitors and provide a detailed analysis of their strengths, weaknesses, and market positioning.',
       avatar: '/Avatar/Business-Development.mp4',
     },
-        {
+     {
       id: 2,
       title: 'Study retention strategies in your industry',
       description: 'Generate engaging content for your social platforms',
@@ -46,7 +46,7 @@ export function UseCasesSection({ userId }: UseCasesSectionProps) {
         'Help me build a high-converting website that drives sales and generates leads for my business.',
       avatar: '/Avatar/Growth Bot.mp4',
     },
-     {
+    {
       id: 4,
       title: 'Discover successful community engagement tactics',
       description: 'Discover successful community engagement tactics by analyzing how local businesses connect, participate, and create memorable experiences that build loyalty and visibility.',
@@ -57,50 +57,6 @@ export function UseCasesSection({ userId }: UseCasesSectionProps) {
         'Write compelling sales copy for my product that converts visitors into customers.',
       avatar: '/Avatar/Copy Writer.mp4',
     },
-    {
-  id: 5,
-  title: 'Analyze competitor strategies',
-  description: 'Understand why customers choose competitors and identify opportunities to position your business as the obvious choice.',
-  category: 'Marketing & Content',
-  color: 'red',
-  helper: 'builder-bot',
-  prompt:
-    'Research my competitors to analyze what makes their customers choose them, identify their strengths and weaknesses, and suggest how my business can stand out as the clear choice.',
-  avatar: '/Avatar/Builder-Bot.mp4',
-},
-{
-  id: 6,
-  title: 'Clarify confusing offers',
-  description: 'Turn confusing menus, packages, or services into clear offers that customers easily understand and say yes to.',
-  category: 'Offer Fixers',
-  color: 'orange',
-  helper: 'pm-bot',
-  prompt:
-    'Analyze my current menus, packages, or service offerings and suggest ways to simplify and structure them so customers clearly understand the value and feel confident paying the right price.',
-  avatar: '/Avatar/PM Bot.mp4',
-},
-{
-  id: 7,
-  title: 'Plan long-term market dominance',
-  description: 'Develop strategies to become the default business in your area, minimizing the impact of competitors and securing your local market leadership.',
-  category: 'Local Dominance',
-  color: 'purple',
-  helper: 'soshie',
-  prompt:
-    'Analyze my local market and competitors, then create a long-term strategy that positions my business as the go-to choice, ensuring sustained leadership and market control.',
-  avatar: '/Avatar/Social Media.mp4',
-},
-{
-  id: 8,
-  title: 'Increase profitability per customer',
-  description: 'Identify ways to increase how much each customer spends, fix underpriced services, and improve overall profitability without adding more work hours.',
-  category: 'Profit Maximizer',
-  color: 'yellow',
-  helper: 'dev-bot',
-  prompt:
-    'Analyze my current pricing, products, and services to suggest strategies that increase revenue per customer, optimize pricing, and maximize profit without requiring additional work.',
-  avatar: '/Avatar/Dev Bot.mp4',
-}
   ]
 
 
@@ -173,12 +129,12 @@ export function UseCasesSection({ userId }: UseCasesSectionProps) {
         <h2 className="text-lg font-bold text-white sm:text-xl md:text-2xl">
           Use cases
         </h2>
-        <button
+        {/* <button
           onClick={() => setShowAll(!showAll)}
           className="font-medium text-white hover:text-gray-300"
         >
           {showAll ? 'See less' : 'See all'}
-        </button>
+        </button> */}
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-4">
