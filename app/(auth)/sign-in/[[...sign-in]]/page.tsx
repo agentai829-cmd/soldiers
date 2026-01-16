@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react'
 
-const hasClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && 
-                    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY !== 'your_clerk_publishable_key_here' &&
-                    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY !== ''
+const hasClerkKeys =
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY !==
+    'your_clerk_publishable_key_here' &&
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY !== ''
 
 export default function SignInPage() {
   const [SignInComponent, setSignInComponent] = useState<any>(null)
@@ -20,15 +22,16 @@ export default function SignInPage() {
   if (!hasClerkKeys) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-          <h1 className="text-2xl font-bold text-center mb-4">Sign In</h1>
-          <p className="text-center text-gray-600 mb-6">
-            Clerk authentication is not configured. Please add your Clerk API keys to .env.local
+        <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
+          <h1 className="mb-4 text-center text-2xl font-bold">Sign In</h1>
+          <p className="mb-6 text-center text-gray-600">
+            Clerk authentication is not configured. Please add your Clerk API
+            keys to .env.local
           </p>
           <div className="space-y-4">
-            <button 
-              onClick={() => window.location.href = '/workspace/demo'} 
-              className="w-full bg-black text-white py-2 px-4 rounded hover:bg-gray-800"
+            <button
+              onClick={() => (window.location.href = '/workspace/demo')}
+              className="w-full rounded bg-black px-4 py-2 text-white hover:bg-gray-800"
             >
               Continue to Demo (No Auth)
             </button>
@@ -49,7 +52,10 @@ export default function SignInPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-md">
-        <SignInComponent 
+        <SignInComponent
+          path="/sign-in"
+          routing="path"
+          signUpUrl="/sign-up"
           appearance={{
             elements: {
               formButtonPrimary: 'bg-black hover:bg-gray-800 text-white',
