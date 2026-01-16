@@ -82,9 +82,9 @@ export async function getUnlockedSoldiers(userId: string): Promise<string[]> {
   try {
     const subscription = await db.billingSubscription.findUnique({
       where: { clerkId: userId },
-      include:{
+      include: {
         unlockedSoldiers: true,
-      }
+      },
     })
 
     // If no subscription exists, return empty array
@@ -92,19 +92,20 @@ export async function getUnlockedSoldiers(userId: string): Promise<string[]> {
       return []
     }
 
-   const unlockedSoldiers = subscription.unlockedSoldiers
-  ?.flatMap((item) => {
-    const expiryDate = new Date(item.currentPeriodEnd)
-    const now = new Date()
+    const unlockedSoldiers =
+      subscription.unlockedSoldiers?.flatMap((item) => {
+        const expiryDate = new Date(item?.currentPeriodEnd || 0)
+        const now = new Date()
 
-    if (item.unlockedSoldiers && now < expiryDate) {
-      // ensure it's an array
-      return item.unlockedSoldiers
-    } else {
-      return []
-    }
-  }) ?? []
-
+        if (item.unlockedSoldiers && item.interval === 'LIFETIME') {
+          return item.unlockedSoldiers
+        } else if (item.unlockedSoldiers && now < expiryDate) {
+          // ensure it's an array
+          return item.unlockedSoldiers
+        } else {
+          return []
+        }
+      }) ?? []
 
     return unlockedSoldiers || []
   } catch (error) {
@@ -124,20 +125,20 @@ export async function getUnlockedSoldiers(userId: string): Promise<string[]> {
 
 interface StoreStripePaymentInDB {
   clerkUserId: string
-  customerId: string
-  stripeSessionId: string
+  customerId?: string | null
+  stripeSessionId?: string | null
   totalAmount: number
-  paymentIntent: string
+  paymentIntent?: string | null
   emailAddress: string
   currency: string
-  subscriptionId: string
-  subscriptionStartDate: Date
-  subscriptionEndDate: Date
+  subscriptionId?: string | null
+  subscriptionStartDate: Date | null
+  subscriptionEndDate: Date | null
   unlockedAgents: string[]
   planType: string
   planId: 'STARTER' | 'PROFESSIONAL' | 'SINGLE' | 'SOLDIERSX' | 'LIFETIME'
-  priceId: string;
-    unlockedSoldiersType: "WITHOUT_ADDONS"  | "ADDONS"
+  priceId?: string | null
+  unlockedSoldiersType: 'WITHOUT_ADDONS' | 'ADDONS'
 }
 
 export const storeStripePaymentInDB = async ({
@@ -155,7 +156,7 @@ export const storeStripePaymentInDB = async ({
   planId,
   planType,
   priceId,
-unlockedSoldiersType
+  unlockedSoldiersType,
 }: StoreStripePaymentInDB) => {
   await db.payment.create({
     data: {
@@ -170,21 +171,22 @@ unlockedSoldiersType
     },
   })
   const billing = await db.billingSubscription.upsert({
-    where:{
+    where: {
       clerkId: clerkUserId,
     },
-    update:{
+    update: {
       planId: planId,
       planType: planType as PlanType,
       stripeCustomerId: customerId,
       stripeSubscriptionId: subscriptionId,
       stripePriceId: priceId,
       status: 'ACTIVE',
+      amount: totalAmount,
       currentPeriodStart: subscriptionStartDate,
       currentPeriodEnd: subscriptionEndDate,
       clerkId: clerkUserId,
-      cancelAtPeriodEnd: true,
-      interval: planId === "LIFETIME" ? "LIFETIME" : planId === 'STARTER' ? 'MONTH' : 'YEAR',
+      cancelAtPeriodEnd: planId === 'LIFETIME' ? false : true,
+      interval: planId === 'LIFETIME' ? 'LIFETIME' : 'MONTH',
     },
     create: {
       planId: planId,
@@ -193,26 +195,29 @@ unlockedSoldiersType
       stripeSubscriptionId: subscriptionId,
       stripePriceId: priceId,
       status: 'ACTIVE',
+      amount: totalAmount,
       currentPeriodStart: subscriptionStartDate,
       currentPeriodEnd: subscriptionEndDate,
       clerkId: clerkUserId,
-      cancelAtPeriodEnd: true,
+      cancelAtPeriodEnd: planId === 'LIFETIME' ? false : true,
       email: emailAddress || '',
-      interval: planId === "LIFETIME" ? "LIFETIME" : planId === 'STARTER' ? 'MONTH' : 'YEAR',
+      interval: planId === 'LIFETIME' ? 'LIFETIME' : 'MONTH',
     },
   })
   await db.unlockSoldiers.create({
-    data:{
+    data: {
       billingSubscriptionId: billing.id,
       unlockedSoldiers: unlockedAgents,
       clerkId: clerkUserId,
       currentPeriodStart: subscriptionStartDate,
       currentPeriodEnd: subscriptionEndDate,
       stripeSubscriptionId: subscriptionId,
-      interval: planId === "LIFETIME" ? "LIFETIME" : planId === 'STARTER' ? 'MONTH' : 'YEAR',
+      interval: planId === 'LIFETIME' ? 'LIFETIME' : 'MONTH',
       stripeCustomerId: customerId,
+      amount: totalAmount,
       stripePriceId: priceId,
-      type: unlockedSoldiersType === "WITHOUT_ADDONS" ? "WITHOUT_ADDONS" : "ADDONS",
-    }
+      type:
+        unlockedSoldiersType === 'WITHOUT_ADDONS' ? 'WITHOUT_ADDONS' : 'ADDONS',
+    },
   })
 }

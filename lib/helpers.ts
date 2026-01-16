@@ -1,5 +1,5 @@
 // Default helpers configuration - available to all users
-export const DEFAULT_HELPERS = [
+export const DEFAULT_HELPERS = [ 
   // Startup & Business Growth Agents
   {
     id: 'buddy',

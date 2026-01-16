@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session
         const stripeEmailAddress = session.customer_details?.email
         const stripeSessionId = session.id
-        const totalAmount = session.amount_total
+        const totalAmount = (session.amount_total || 0) / 100 // Convert to dollars
         const currency = session.currency
         const metadata = session.metadata || {}
         const clerkUserId = metadata?.clerkUserId
@@ -50,24 +50,33 @@ export async function POST(req: NextRequest) {
           | 'PROFESSIONAL'
           | 'SINGLE'
           | 'SOLDIERSX'
-          | "LIFETIME"
+          | 'LIFETIME'
         const planType = metadata?.planType
-        const customerId = session.customer
+        let customerId = session?.customer
 
-        const subscriptions = await stripe.subscriptions.list({
-          customer: customerId as string,
-          status: 'active',
-          limit: 1,
-        })
-        const subscription = subscriptions.data[0]
+        let subscriptions: Stripe.Response<
+          Stripe.ApiList<Stripe.Subscription>
+        > | null = null
+        let subscription: Stripe.Subscription | null = null
+        let subscriptionStartDate: Date | null = null
+        let subscriptionEndDate: Date | null = null
 
-        const subscriptionStartDate = new Date(
-          subscription.current_period_start * 1000
-        )
-        const subscriptionEndDate = new Date(
-          subscription.current_period_end * 1000
-        )
+        if (customerId) {
+          subscriptions = await stripe.subscriptions.list({
+            customer: customerId as string,
+            status: 'active',
+            limit: 1,
+          })
+        }
 
+        if (subscriptions && subscriptions?.data?.length > 0) {
+          subscription = subscriptions.data[0]
+          subscriptionStartDate = new Date(
+            subscription.current_period_start * 1000
+          )
+          subscriptionEndDate = new Date(subscription.current_period_end * 1000)
+        }
+        console.log(metadata?.unlockedAgents)
         const unlockedAgents = (metadata?.unlockedAgents as string)
           .split(',')
           .map((item) => item.trim())
@@ -92,8 +101,6 @@ export async function POST(req: NextRequest) {
           })
           if (existingUser) {
             console.log("We found a user updating it's subscription")
-            // We have a user with this emai
-            // We can just add an subscription
 
             await storeStripePaymentInDB({
               clerkUserId: existingUser.clerkId,
@@ -105,12 +112,12 @@ export async function POST(req: NextRequest) {
               planId,
               planType,
               stripeSessionId,
-              subscriptionId: subscription.id,
-              subscriptionStartDate,
-              subscriptionEndDate,
+              subscriptionId: subscription?.id,
+              subscriptionStartDate: subscriptionStartDate,
+              subscriptionEndDate: subscriptionEndDate,
               unlockedAgents,
-              priceId: subscription.items.data[0].price.id,
-              unlockedSoldiersType: "WITHOUT_ADDONS"
+              priceId: subscription?.items?.data?.[0]?.price?.id,
+              unlockedSoldiersType: 'WITHOUT_ADDONS',
             })
           } else {
             await db.pendingPayment.create({
@@ -119,13 +126,19 @@ export async function POST(req: NextRequest) {
                 paymentIntent: (session.payment_intent as string) || '',
                 planId,
                 planType,
-                subscriptionId: subscription.id,
+                subscriptionId: subscription?.id,
                 stripeSessionId,
                 totalAmount: totalAmount as number,
                 customerId: customerId as string,
                 currency: currency as string,
                 unlockedAgents,
-                priceId: subscription.items.data[0].price.id,
+                interval:
+                  planId === 'LIFETIME'
+                    ? 'LIFETIME'
+                    : planId === 'STARTER'
+                      ? 'MONTH'
+                      : 'YEAR',
+                priceId: subscription?.items?.data?.[0]?.price?.id,
                 subscriptionStartDate,
                 subscriptionEndDate,
               },
@@ -151,12 +164,12 @@ export async function POST(req: NextRequest) {
                 planId,
                 planType,
                 stripeSessionId,
-                subscriptionId: subscription.id,
+                subscriptionId: subscription?.id,
                 subscriptionStartDate,
                 subscriptionEndDate,
                 unlockedAgents,
-                priceId: subscription.items.data[0].price.id,
-                unlockedSoldiersType: "WITHOUT_ADDONS"
+                priceId: subscription?.items?.data?.[0]?.price?.id,
+                unlockedSoldiersType: 'WITHOUT_ADDONS',
               })
 
               console.log('💾 Payment saved to database for:', emailAddress)
@@ -184,20 +197,21 @@ export async function POST(req: NextRequest) {
               //     filteredRepeatedSoldiers.push(soldier)
               //   }
               // }
-                await db.unlockSoldiers.create({
-    data:{
-      billingSubscriptionId: existingBilling.id,
-      unlockedSoldiers: unlockedAgents,
-      clerkId: clerkUserId,
-      currentPeriodStart: subscriptionStartDate,
-      currentPeriodEnd: subscriptionEndDate,
-      stripeSubscriptionId: subscription.id,
-      interval: planId === "LIFETIME" ? "LIFETIME" : planId === 'STARTER' ? 'MONTH' : 'YEAR',
-      stripeCustomerId: customerId as string,
-      stripePriceId: subscription.items.data[0].price.id,
-      type: "ADDONS"
-    }
-  })
+              await db.unlockSoldiers.create({
+                data: {
+                  billingSubscriptionId: existingBilling.id,
+                  unlockedSoldiers: unlockedAgents,
+                  clerkId: clerkUserId,
+                  currentPeriodStart: subscriptionStartDate,
+                  currentPeriodEnd: subscriptionEndDate,
+                  stripeSubscriptionId: subscription?.id,
+                  amount: totalAmount,
+                  interval: planId === 'LIFETIME' ? 'LIFETIME' : 'MONTH',
+                  stripeCustomerId: customerId as string,
+                  stripePriceId: subscription?.items?.data?.[0]?.price?.id,
+                  type: 'ADDONS',
+                },
+              })
             }
           }
         }

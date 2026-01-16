@@ -36,7 +36,7 @@ export async function POST(request: Request) {
           clerkUserId: newUser.clerkId,
           emailAddress: newUser.email,
           currency: pendingPayment.currency,
-          customerId: pendingPayment.customerId,
+          customerId: pendingPayment?.customerId,
           totalAmount: pendingPayment.totalAmount,
           paymentIntent: pendingPayment.paymentIntent,
           planId: pendingPayment.planId as
@@ -51,6 +51,7 @@ export async function POST(request: Request) {
           subscriptionEndDate: pendingPayment.subscriptionEndDate,
           unlockedAgents: pendingPayment.unlockedAgents,
           priceId: pendingPayment.priceId,
+          unlockedSoldiersType: 'WITHOUT_ADDONS',
         })
       }
     }

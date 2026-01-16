@@ -134,10 +134,9 @@ model Member {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   userId      String
-  workspaceId String
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, workspaceId])
+  @@unique([userId])
   @@map("members")
 }
 
@@ -317,11 +316,12 @@ model UnlockSoldiers {
   type                  UnlockSoldiersType @default(WITHOUT_ADDONS)
   billingSubscription   BillingSubscription @relation(fields: [billingSubscriptionId], references: [id], onDelete: Cascade)
   clerkId               String
-  currentPeriodStart    DateTime
-  currentPeriodEnd      DateTime
+  currentPeriodStart    DateTime?
+  currentPeriodEnd      DateTime?
   interval              Interval @default(MONTH)
+  amount                Int
   stripeCustomerId      String?
-  stripeSubscriptionId  String             @unique
+  stripeSubscriptionId  String?             @unique
   stripePriceId         String?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
@@ -333,12 +333,13 @@ model BillingSubscription {
   planType             PlanType @default(STARTER)
   interval             Interval @default(MONTH)
   stripeCustomerId     String?
-  stripeSubscriptionId String             @unique
+  stripeSubscriptionId String?             @unique
   stripePriceId        String?
+  amount               Int
   unlockedSoldiers     UnlockSoldiers[]
   status               SubscriptionStatus @default(ACTIVE)
-  currentPeriodStart   DateTime
-  currentPeriodEnd     DateTime
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
   cancelAtPeriodEnd    Boolean            @default(false)
   createdAt            DateTime           @default(now())
   email                String   @unique
@@ -411,18 +412,19 @@ model Payment {
 model PendingPayment {
   id                      String @id @default(cuid())
   emailAddress            String
-  paymentIntent           String
+  paymentIntent           String?
   planId                  String
   planType                String
-  subscriptionId          String
-  stripeSessionId         String
+  subscriptionId          String?
+  stripeSessionId         String?
+  interval                Interval @default(MONTH)
   totalAmount             Int
-  customerId              String
+  customerId              String?
   currency                String
   unlockedAgents          String[]
-  priceId                 String
-  subscriptionStartDate   DateTime
-  subscriptionEndDate     DateTime
+  priceId                 String?
+  subscriptionStartDate   DateTime?
+  subscriptionEndDate     DateTime?
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
 }

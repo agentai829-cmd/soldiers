@@ -45,11 +45,10 @@ export async function GET() {
       orderBy: {
         createdAt: 'desc',
       },
-      include:{
-        unlockedSoldiers: true
-      }
+      include: {
+        unlockedSoldiers: true,
+      },
     })
-
 
     if (!subscription) {
       return NextResponse.json({
@@ -64,51 +63,61 @@ export async function GET() {
 
     // Map all unlocked soldiers name where expiry date is in the future
     const now = new Date()
-// const initialsSoldiers = [
-//   "builder-bot",
-//   "dev-bot",
-//   "pm-bot",
-//   "commet",
-//   "soshie",
-// ]
-// const addOnsSoldiers = [
-//   "buddy",
-//   "pitch-bot",
-//   "growth-bot",
-//   "strategy-adviser",
-//   "penn",
-// ]
+    // const initialsSoldiers = [
+    //   "builder-bot",
+    //   "dev-bot",
+    //   "pm-bot",
+    //   "commet",
+    //   "soshie",
+    // ]
+    // const addOnsSoldiers = [
+    //   "buddy",
+    //   "pitch-bot",
+    //   "growth-bot",
+    //   "strategy-adviser",
+    //   "penn",
+    // ]
 
-const initialUnlockedSoldiers = subscription.unlockedSoldiers
-  .filter((soldier) => {
-    const validExpiry = soldier.currentPeriodEnd > now
+    const initialUnlockedSoldiers = subscription.unlockedSoldiers
+      .filter((soldier) => {
+        if (
+          soldier.interval === 'LIFETIME' &&
+          soldier.type === 'WITHOUT_ADDONS'
+        ) {
+          return true
+        }
+        const validExpiry = (soldier.currentPeriodEnd || new Date(0)) > now
 
-    const withoutAddOns = soldier.type === "WITHOUT_ADDONS"
+        const withoutAddOns = soldier.type === 'WITHOUT_ADDONS'
 
-    return validExpiry && withoutAddOns
-  })
-  .flatMap((soldier) => soldier.unlockedSoldiers)
+        return validExpiry && withoutAddOns
+      })
+      .flatMap((soldier) => soldier.unlockedSoldiers)
 
-const addOnUnlockedSoldiers = subscription.unlockedSoldiers
-  .filter((soldier) => {
-    const validExpiry = soldier.currentPeriodEnd > now
+    const addOnUnlockedSoldiers = subscription.unlockedSoldiers
+      .filter((soldier) => {
+        if (soldier.interval === 'LIFETIME' && soldier.type === 'ADDONS') {
+          return true
+        }
+        const validExpiry = (soldier.currentPeriodEnd || new Date(0)) > now
 
-    const withAddOns = soldier.type === "ADDONS"
+        const withAddOns = soldier.type === 'ADDONS'
 
-    return validExpiry  && withAddOns
-  })
-  .flatMap((soldier) => ({
-    addOnUnlockedSoldiers: soldier.unlockedSoldiers,
-    expiryDate: soldier.currentPeriodEnd,
-    interval: soldier.interval,
-  }))
-
+        return validExpiry && withAddOns
+      })
+      .flatMap((soldier) => ({
+        addOnUnlockedSoldiers: soldier.unlockedSoldiers,
+        expiryDate: soldier.currentPeriodEnd,
+        interval: soldier.interval,
+        amount: soldier.amount,
+      }))
 
     const subscriptionData = {
       id: subscription.id,
       planType: subscription.planType,
       interval: subscription.interval,
       status: subscription.status,
+      amount: subscription.amount,
       currentPeriodEnd: subscription.currentPeriodEnd,
       stripeSubscriptionId: subscription.stripeSubscriptionId,
       stripeCustomerId: subscription.stripeCustomerId,

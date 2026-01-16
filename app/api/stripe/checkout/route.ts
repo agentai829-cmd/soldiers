@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         clerkId,
         email,
       }
-    } else if (purchaseType === "SUBSCRIPTION" && planId === 'STARTER') {
+    } else if (purchaseType === "SUBSCRIPTION" && planId === 'STARTER') { 
       console.log('Monthly Subscription')
       priceId = process.env.STRIPE_SUBSCRIPTION_FIVE_AGENTS_PLAN_ID!
       metadata = {

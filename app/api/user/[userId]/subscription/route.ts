@@ -23,36 +23,48 @@ export async function GET(
         currentPeriodStart: true,
         currentPeriodEnd: true,
         status: true,
+        interval: true,
       },
     })
     const existingUnlockedSoldiers = await db.unlockSoldiers.findMany({
-      where:{
-        billingSubscriptionId: existingSubscription?.id
+      where: {
+        billingSubscriptionId: existingSubscription?.id,
       },
-      select:{
+      select: {
         unlockedSoldiers: true,
         currentPeriodStart: true,
         currentPeriodEnd: true,
-      }
+        interval: true,
+      },
     })
 
-    const unlockedSoldiers = existingUnlockedSoldiers?.flatMap((item) => {
-      const expiryDate = new Date(item.currentPeriodEnd)
-      const now = new Date()
-      if (item.unlockedSoldiers && now < expiryDate) {
-        // ensure it's an array
-        return item.unlockedSoldiers
-      } else {
-        return []
-      }
-    }) || []
+    const unlockedSoldiers =
+      existingUnlockedSoldiers?.flatMap((item) => {
+        if (item.interval === 'LIFETIME') {
+          return item.unlockedSoldiers || []
+        }
+        const expiryDate = new Date(item?.currentPeriodEnd || 0)
+        const now = new Date()
+        if (item.unlockedSoldiers && now < expiryDate) {
+          // ensure it's an array
+          return item.unlockedSoldiers
+        } else {
+          return []
+        }
+      }) || []
 
     const subscriptionStatus = () => {
+      if (
+        existingSubscription &&
+        existingSubscription.interval === 'LIFETIME'
+      ) {
+        return 'VALID'
+      }
       const subscriptionNotFound = !existingSubscription
 
       const subscriptionExpired =
         existingSubscription &&
-        existingSubscription.currentPeriodEnd < new Date()
+        (existingSubscription.currentPeriodEnd || 0) < new Date()
 
       const validSubscription =
         existingSubscription &&

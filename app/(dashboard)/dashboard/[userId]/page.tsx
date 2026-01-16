@@ -41,7 +41,7 @@ interface HomePageProps {
 }
 
 const allAgents = [
-    {
+  {
     id: 'buddy',
     name: 'Bob',
     role: 'Buzz Builder',
@@ -50,7 +50,7 @@ const allAgents = [
     avatar: '/Avatar/Business-Development.mp4',
     comingSoon: false,
   },
-   {
+  {
     id: 'pitch-bot',
     name: 'Lisa',
     role: 'Loyalty',
@@ -75,7 +75,7 @@ const allAgents = [
     avatar: '/Avatar/Growth Bot.mp4',
     comingSoon: false,
   },
-   {
+  {
     id: 'strategy-adviser',
     name: 'Emma',
     role: 'Search Engine',
@@ -84,7 +84,7 @@ const allAgents = [
     avatar: '/Avatar/Strategy Advisor.mp4',
     comingSoon: false,
   },
-    {
+  {
     id: 'penn',
     name: 'Sarah',
     role: 'Local Celebrity',
@@ -102,7 +102,7 @@ const allAgents = [
     avatar: '/Avatar/Builder-Bot.mp4',
     comingSoon: false,
   },
-   {
+  {
     id: 'dev-bot',
     name: 'Paul',
     role: 'Profit Maximizer',
@@ -111,7 +111,7 @@ const allAgents = [
     avatar: '/Avatar/Dev Bot.mp4',
     comingSoon: false,
   },
-   {
+  {
     id: 'pm-bot',
     name: 'Olivia',
     role: 'Offer Fixer',
@@ -120,7 +120,7 @@ const allAgents = [
     avatar: '/Avatar/PM Bot.mp4',
     comingSoon: false,
   },
-   {
+  {
     id: 'commet',
     name: 'Wendy',
     role: 'Customer Whisperer',
@@ -160,8 +160,7 @@ export default function HomePage({ params }: HomePageProps) {
   // Use actual soldier IDs from database (agent IDs, not display names)
 
   const hasAllSoldiersUnlocked =
-    Array.isArray(unlockedSoldiers) &&
-    unlockedSoldiers.length > 5
+    Array.isArray(unlockedSoldiers) && unlockedSoldiers.length > 5
 
   const searchRef = useRef<HTMLDivElement>(null)
 
@@ -195,6 +194,8 @@ export default function HomePage({ params }: HomePageProps) {
       refreshSubscription()
     }
   }, [params.userId])
+
+  console.log(hasValidSubscription)
 
   // Get workspace info and unlocked soldiers
   // useEffect(() => {
@@ -689,8 +690,8 @@ export default function HomePage({ params }: HomePageProps) {
         </div>
 
         {/* Use Cases Section */}
-        {hasValidSubscription === "VALID" && (
-        <UseCasesSection userId={params.userId} />
+        {hasValidSubscription === 'VALID' && (
+          <UseCasesSection userId={params.userId} />
         )}
 
         {/* Helpers Section */}
@@ -728,103 +729,105 @@ export default function HomePage({ params }: HomePageProps) {
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 md:gap-4 lg:grid-cols-5">
                 {allAgents.map((helper, index) => (
                   <>
-                  {index === 5 && (
-                    <>
+                    {index === 5 && (
+                      <>
                         {!hasAllSoldiersUnlocked &&
-                hasValidSubscription !== 'NOT_FOUND' && (
-                  <div
-                    className="relative col-span-2 mb-4 flex flex-row items-center justify-between overflow-hidden rounded-lg border-2 border-[#FFD700] bg-gradient-to-br from-gray-800 to-gray-900 p-4 shadow-lg sm:col-span-3 sm:p-6 md:col-span-4 lg:col-span-5"
-                    style={{ boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)' }}
-                  >
-                    <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-purple-500/10 blur-3xl sm:h-32 sm:w-32"></div>
-                    <div className="absolute bottom-0 left-0 h-24 w-24 rounded-full bg-blue-500/10 blur-3xl sm:h-32 sm:w-32"></div>
+                          hasValidSubscription !== 'NOT_FOUND' && (
+                            <div
+                              className="relative col-span-2 mb-4 flex flex-row items-center justify-between overflow-hidden rounded-lg border-2 border-[#FFD700] bg-gradient-to-br from-gray-800 to-gray-900 p-4 shadow-lg sm:col-span-3 sm:p-6 md:col-span-4 lg:col-span-5"
+                              style={{
+                                boxShadow: '0 0 20px rgba(255, 215, 0, 0.3)',
+                              }}
+                            >
+                              <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-purple-500/10 blur-3xl sm:h-32 sm:w-32"></div>
+                              <div className="absolute bottom-0 left-0 h-24 w-24 rounded-full bg-blue-500/10 blur-3xl sm:h-32 sm:w-32"></div>
 
-                    {/* Left Side - Text & Button */}
-                    <div className="flex flex-col gap-2">
-                      <h3 className="mb-2 text-xl font-bold text-white sm:text-2xl">
-                        Soldiers X
-                      </h3>
-                      <div className="flex items-center gap-5">
-                        <div className="relative z-10 flex-1 text-left">
-                          <p className="mb-3 text-xs text-white/80 sm:mb-4 sm:text-sm">
-                            Unlock all 5 of your helpers.
-                          </p>
+                              {/* Left Side - Text & Button */}
+                              <div className="flex flex-col gap-2">
+                                <h3 className="mb-2 text-xl font-bold text-white sm:text-2xl">
+                                  Soldiers X
+                                </h3>
+                                <div className="flex items-center gap-5">
+                                  <div className="relative z-10 flex-1 text-left">
+                                    <p className="mb-3 text-xs text-white/80 sm:mb-4 sm:text-sm">
+                                      Unlock all 5 of your helpers.
+                                    </p>
 
-                          <div className="mb-3 space-y-1 sm:mb-4 sm:space-y-2">
-                            <div className="flex items-center gap-2 text-xs text-white/90 sm:text-sm">
-                              <svg
-                                className="h-3 w-3 text-green-400 sm:h-4 sm:w-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
+                                    <div className="mb-3 space-y-1 sm:mb-4 sm:space-y-2">
+                                      <div className="flex items-center gap-2 text-xs text-white/90 sm:text-sm">
+                                        <svg
+                                          className="h-3 w-3 text-green-400 sm:h-4 sm:w-4"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M5 13l4 4L19 7"
+                                          />
+                                        </svg>
+                                        <span>5 Helpers</span>
+                                      </div>
+                                      <div className="flex items-center gap-2 text-xs text-white/90 sm:text-sm">
+                                        <svg
+                                          className="h-3 w-3 text-green-400 sm:h-4 sm:w-4"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M5 13l4 4L19 7"
+                                          />
+                                        </svg>
+                                        <span>50+ Power-Ups</span>
+                                      </div>
+                                    </div>
+
+                                    <Button
+                                      onClick={() => {
+                                        setSelectedHelper('BUNDLE')
+                                        setShowUpgradeDialog(true)
+                                      }}
+                                      className="rounded-lg border border-yellow-400/50 bg-gradient-to-r from-yellow-600 to-yellow-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-yellow-500/20 hover:from-yellow-700 hover:to-yellow-600 hover:text-white sm:px-6 sm:text-base"
+                                    >
+                                      Unlock Soldiers X
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Right Side - Image */}
+                              <div className="relative z-10 ml-4 flex-shrink-0 self-end sm:ml-6">
+                                <img
+                                  src="/icon/5avacard.png"
+                                  alt="Soldiers"
+                                  className="h-20 w-auto object-contain sm:h-20 md:h-28 lg:h-40"
                                 />
-                              </svg>
-                              <span>5 Helpers</span>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2 text-xs text-white/90 sm:text-sm">
-                              <svg
-                                className="h-3 w-3 text-green-400 sm:h-4 sm:w-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                              <span>50+ Power-Ups</span>
-                            </div>
-                          </div>
-
-                          <Button
-                            onClick={() => {
-                              setSelectedHelper('BUNDLE')
-                              setShowUpgradeDialog(true)
-                            }}
-                            className="rounded-lg border border-yellow-400/50 bg-gradient-to-r from-yellow-600 to-yellow-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-yellow-500/20 hover:from-yellow-700 hover:to-yellow-600 hover:text-white sm:px-6 sm:text-base"
-                          >
-                            Unlock Soldiers X
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Side - Image */}
-                    <div className="relative z-10 ml-4 flex-shrink-0 self-end sm:ml-6">
-                      <img
-                        src="/icon/5avacard.png"
-                        alt="Soldiers"
-                        className="h-20 w-auto object-contain sm:h-20 md:h-28 lg:h-40"
-                      />
-                    </div>
-                  </div>
-                )}
-                    </>
-                  )}
-                  <SoldierCard
-                    key={index}
-                    handleRedirectToChat={() =>
-                      handleRedirectToChat(helper.id, helper.name)
-                    }
-                    choosedHelper={choosedHelper}
-                    helperId={helper.id as any}
-                    helperName={helper.name as any}
-                    isHelperLoading={isHelperLoading}
-                    setSelectedHelper={setSelectedHelper}
-                    role={helper.role as any}
-                    setShowUpgradeDialog={() => setShowUpgradeDialog(true)}
-                    unlockedSoldiers={unlockedSoldiers}
-                    videoUrl={helper.avatar}
-                  />
+                          )}
+                      </>
+                    )}
+                    <SoldierCard
+                      key={index}
+                      handleRedirectToChat={() =>
+                        handleRedirectToChat(helper.id, helper.name)
+                      }
+                      choosedHelper={choosedHelper}
+                      helperId={helper.id as any}
+                      helperName={helper.name as any}
+                      isHelperLoading={isHelperLoading}
+                      setSelectedHelper={setSelectedHelper}
+                      role={helper.role as any}
+                      setShowUpgradeDialog={() => setShowUpgradeDialog(true)}
+                      unlockedSoldiers={unlockedSoldiers}
+                      videoUrl={helper.avatar}
+                    />
                   </>
                 ))}
               </div>
