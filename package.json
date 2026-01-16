@@ -14,10 +14,6 @@
     "db:reset": "prisma migrate reset",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "db:manager": "node scripts/db-manager.js",
-    "db:deploy": "node scripts/db-manager.js deploy",
-    "db:status": "node scripts/db-manager.js status",
-    "db:introspect": "node scripts/db-manager.js introspect",
     "worker": "tsx worker/worker.ts",
     "worker:build": "tsc worker/worker.ts --outDir dist",
     "worker:prod": "node dist/worker/worker.js",
@@ -28,12 +24,7 @@
     "format:check": "prettier --check .",
     "agents:check": "node -e \"console.log('Checking agent configurations...'); require('./lib/openai-agents.ts').getTrainedAgents().forEach(a => console.log('✅', a.name, a.isTrained ? 'trained' : 'legacy'))\"",
     "agents:list": "node -e \"const agents = require('./lib/openai-agents.ts').TRAINED_AGENTS; Object.entries(agents).forEach(([id, config]) => console.log(id + ':', config.name, '-', config.promptId ? 'Trained' : 'Legacy'))\"",
-    "postbuild": "node scripts/post-build.js",
-    "build:full": "npm run build && npm run postbuild",
-    "build:production": "NODE_ENV=production npm run build:full",
-    "db:push:deploy": "prisma db push --accept-data-loss",
-    "db:verify": "prisma validate && echo 'Schema validation completed successfully'",
-    "vercel-build": "node scripts/vercel-build.js"
+    "vercel-build": "prisma generate && prisma db push deploy && next build"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.7",
