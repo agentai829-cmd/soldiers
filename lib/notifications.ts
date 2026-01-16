@@ -35,11 +35,11 @@ export async function getUserNotifications(userId: string): Promise<InboxData> {
       {
         id: 'welcome-1',
         type: 'WELCOME',
-        title: 'Welcome to Sintra! 👋',
+        title: 'Welcome to Local Pilot! 👋',
         message: 'Get started with your AI workspace',
         isRead: hasKnowledge, // Mark as read if user has added knowledge
         createdAt: new Date(),
-        helperId: 'vizzy',
+        helperId: 'buddy',
         metadata: {},
       },
     ]
@@ -170,7 +170,7 @@ export async function generateKnowledgeBasedSuggestions(userId: string) {
           message: `I can help create LinkedIn posts based on: ${baseTitle}`,
           isRead: false,
           createdAt: representativeDoc.createdAt,
-          helperId: 'soshie',
+          helperId: 'penn',
           relatedId: representativeDoc.id,
           metadata: {
             websiteUrl: websiteUrl,
@@ -242,7 +242,7 @@ export async function generateKnowledgeBasedSuggestions(userId: string) {
           message: `I can create email campaigns based on: ${baseTitle}`,
           isRead: false,
           createdAt: representativeDoc.createdAt,
-          helperId: 'emmie',
+          helperId: 'growth-bot',
           relatedId: representativeDoc.id,
           metadata: {
             websiteUrl: websiteUrl,
@@ -266,7 +266,7 @@ export async function generateKnowledgeBasedSuggestions(userId: string) {
           message: `I can help optimize content from: ${baseTitle}`,
           isRead: false,
           createdAt: representativeDoc.createdAt,
-          helperId: 'seomi',
+          helperId: 'strategy-adviser',
           relatedId: representativeDoc.id,
           metadata: {
             websiteUrl: websiteUrl,
@@ -291,7 +291,7 @@ export async function generateKnowledgeBasedSuggestions(userId: string) {
           message: websiteMessage,
           isRead: false,
           createdAt: representativeDoc.createdAt,
-          helperId: 'vizzy',
+          helperId: 'dev-bot',
           relatedId: representativeDoc.id,
           metadata: {
             websiteUrl: websiteUrl,
@@ -314,7 +314,7 @@ export async function generateKnowledgeBasedSuggestions(userId: string) {
           message: `New content added: ${doc.title} (${Math.round(doc.content.length / 100) / 10}k chars)`,
           isRead: false,
           createdAt: doc.createdAt,
-          helperId: 'vizzy',
+          helperId: 'penn',
           relatedId: doc.id,
           metadata: {
             knowledgeDocId: doc.id,
@@ -335,7 +335,7 @@ export async function generateKnowledgeBasedSuggestions(userId: string) {
         message: `I can provide insights from your ${totalDocs} knowledge sources`,
         isRead: false,
         createdAt: new Date(),
-        helperId: 'dexter',
+        helperId: 'penn',
         metadata: {
           action: 'analyze_knowledge_base',
           knowledgeCount: totalDocs,

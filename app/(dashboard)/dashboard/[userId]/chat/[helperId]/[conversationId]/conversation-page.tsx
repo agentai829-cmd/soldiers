@@ -328,7 +328,7 @@ export default function ChatPage({
       window.history.replaceState({}, '', newUrl.toString())
       setTimeout(() => {
         sendMessage(prompt, [], conversationId)
-      }, 1000)
+      }, 2000)
     }
   }, [userId, helperId, conversationId, loading, messages.length, sendMessage, isMount])
 

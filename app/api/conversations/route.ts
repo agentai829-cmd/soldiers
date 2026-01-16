@@ -41,6 +41,8 @@ export async function POST(request: Request) {
     }
     // Check if selected helper is part of unlocked soldiers
     const unlockedSoldiers = existingBilling?.unlockedSoldiers?.flatMap((item) => item.unlockedSoldiers) || []
+    console.log('Unlocked Soldiers:', unlockedSoldiers)
+    console.log('Helper:', helperId)
     if (!unlockedSoldiers.includes(helperId)) {
       return NextResponse.json(
         { error: 'Selected helper is not part of unlocked soldiers' },
