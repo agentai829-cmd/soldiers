@@ -26,6 +26,7 @@ export async function POST(request: Request) {
       const pendingPayment = await db.pendingPayment.findFirst({
         where: {
           emailAddress: data.email_addresses[0].email_address,
+          isUsed: false,
         },
       })
       if (pendingPayment) {
@@ -52,6 +53,14 @@ export async function POST(request: Request) {
           unlockedAgents: pendingPayment.unlockedAgents,
           priceId: pendingPayment.priceId,
           unlockedSoldiersType: 'WITHOUT_ADDONS',
+        })
+        await db.pendingPayment.update({
+          where: {
+            id: pendingPayment.id,
+          },
+          data: {
+            isUsed: true,
+          },
         })
       }
     }

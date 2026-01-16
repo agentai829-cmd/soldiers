@@ -141,6 +141,7 @@ export async function POST(req: NextRequest) {
                 priceId: subscription?.items?.data?.[0]?.price?.id,
                 subscriptionStartDate,
                 subscriptionEndDate,
+                isUsed: false,
               },
             })
           }

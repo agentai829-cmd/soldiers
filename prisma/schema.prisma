@@ -425,6 +425,7 @@ model PendingPayment {
   priceId                 String?
   subscriptionStartDate   DateTime?
   subscriptionEndDate     DateTime?
+  isUsed                  Boolean @default(false)
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
 }
