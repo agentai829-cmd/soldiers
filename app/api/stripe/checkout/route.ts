@@ -14,8 +14,7 @@ export async function POST(req: NextRequest) {
     let priceId: string = ''
     let metadata: any = {}
 
-    const { purchaseType, agentName, planId, email, clerkId } =
-      await req.json()
+    const { purchaseType, agentName, planId, email, clerkId } = await req.json()
 
     if (!purchaseType) {
       return NextResponse.json(
@@ -25,7 +24,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (purchaseType === 'SOLDIERSX') {
-      priceId = process.env.STRIPE_BUNDLE_SOLDIER_MONTHLY_PLAN_ID!
+      priceId = process.env.STRIPE_SUBSCRIPTION_FIVE_AGENTS_PLAN_ID!
       metadata = {
         purchaseType: 'BUNDLE',
         planType: 'SOLDIERSX',
@@ -34,18 +33,20 @@ export async function POST(req: NextRequest) {
         clerkId,
         email,
       }
-    } else if (purchaseType === "SUBSCRIPTION" && planId === 'PROFESSIONAL') {
+    } else if (purchaseType === 'SUBSCRIPTION' && planId === 'PROFESSIONAL') {
       console.log('Yearly Subscription')
       priceId = process.env.STRIPE_SUBSCRIPTION_TEN_AGENTS_PLAN_ID!
       metadata = {
         purchaseType: 'BUNDLE',
         planType: 'PROFESSIONAL',
-        agentName: 'buddy,pitch-bot,growth-bot,strategy-adviser,penn,builder-bot,dev-bot,pm-bot,commet,soshie',
-        unlockedAgents: 'buddy,pitch-bot,growth-bot,strategy-adviser,penn,builder-bot,dev-bot,pm-bot,commet,soshie',
+        agentName:
+          'buddy,pitch-bot,growth-bot,strategy-adviser,penn,builder-bot,dev-bot,pm-bot,commet,soshie',
+        unlockedAgents:
+          'buddy,pitch-bot,growth-bot,strategy-adviser,penn,builder-bot,dev-bot,pm-bot,commet,soshie',
         clerkId,
         email,
       }
-    } else if (purchaseType === "SUBSCRIPTION" && planId === 'STARTER') { 
+    } else if (purchaseType === 'SUBSCRIPTION' && planId === 'STARTER') {
       console.log('Monthly Subscription')
       priceId = process.env.STRIPE_SUBSCRIPTION_FIVE_AGENTS_PLAN_ID!
       metadata = {
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
         clerkId,
         email,
       }
-    }  else {
+    } else {
       return NextResponse.json(
         {
           message: 'Invalid plan information.',
