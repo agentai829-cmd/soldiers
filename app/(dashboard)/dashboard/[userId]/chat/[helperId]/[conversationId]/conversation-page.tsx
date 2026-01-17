@@ -218,27 +218,29 @@ export default function ChatPage({
     }
   }
   useEffect(() => {
-    if(conversationId){
-      const validateConversation = async()=>{
-        try{
-          const res = await fetch(`/api/conversations/${conversationId}/${userId}/${helperId}`)
-          if(res.ok){
-            const {validatedUser} = await res.json()
-            if(validatedUser){
+    if (conversationId) {
+      const validateConversation = async () => {
+        try {
+          const res = await fetch(
+            `/api/conversations/${conversationId}/${userId}/${helperId}`
+          )
+          if (res.ok) {
+            const { validatedUser } = await res.json()
+            if (validatedUser) {
               // Conversation is valid for this user
               console.log('Conversation validated for user')
-            }else{
+            } else {
               router.replace(`/dashboard/${userId}`)
             }
           }
-        }catch(error){
+        } catch (error) {
           console.log(error)
           router.replace(`/dashboard/${userId}`)
         }
       }
       validateConversation()
     }
-  },[conversationId])
+  }, [conversationId])
   // Auto-scroll when messages change - only for new messages
   useEffect(() => {
     if (messages.length > 0) {
@@ -330,7 +332,15 @@ export default function ChatPage({
         sendMessage(prompt, [], conversationId)
       }, 2000)
     }
-  }, [userId, helperId, conversationId, loading, messages.length, sendMessage, isMount])
+  }, [
+    userId,
+    helperId,
+    conversationId,
+    loading,
+    messages.length,
+    sendMessage,
+    isMount,
+  ])
 
   // Get helper data from local hardcoded config
   useEffect(() => {
@@ -1527,7 +1537,7 @@ export default function ChatPage({
             <div className="helper-chat-messages-bg flex-shrink-0 px-4 pb-4">
               <div className="mx-auto max-w-4xl">
                 <ChatInput
-                isMount={isMount}
+                  isMount={isMount}
                   onSendMessage={handleSendMessage}
                   onGenerateImage={handleGenerateImage}
                   disabled={isLoading}

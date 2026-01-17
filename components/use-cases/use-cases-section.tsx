@@ -13,52 +13,62 @@ export function UseCasesSection({ userId }: UseCasesSectionProps) {
   const [showAll, setShowAll] = useState(false)
 
   const allUseCases = [
-      {
+    {
       id: 1,
       title: 'Get market research on local competitors',
-      description: 'Get detailed competitor analysis and market insights',
+      description: 'Identify what makes businesses memorable in your area',
       category: 'Business',
       color: 'blue',
       helper: 'buddy',
       prompt:
-        'Research my competitors and provide a detailed analysis of their strengths, weaknesses, and market positioning.',
+        'Get market research on local competitors.Identify what makes businesses memorable in your area',
       avatar: '/Avatar/Business-Development.mp4',
     },
-     {
+    {
       id: 2,
-      title: 'Study retention strategies in your industry',
-      description: 'Generate engaging content for your social platforms',
+      title: 'Research why customers stop coming back',
+      description: 'Analyze competitor loyalty programs',
       category: 'Loyalty',
-      color: 'purple',
+      color: 'blue',
       helper: 'pitch-bot',
       prompt:
-        'Study retention strategies in your industry to identify proven methods that keep customers returning, increase loyalty, and maximize lifetime value.',
+        'Research why customers stop coming back. Analyze competitor loyalty programs',
       avatar: '/Avatar/Pitch Bot.mp4',
     },
-     {
+    {
       id: 3,
-      title: 'Build a high-converting website',
-      description: 'Create websites that convert visitors into customers',
-      category: 'Marketing',
-      color: 'orange',
+      title: 'Study response strategies that build trust',
+      description: 'Research industry review benchmarks',
+      category: 'Reputation',
+      color: 'blue',
       helper: 'growth-bot',
       prompt:
-        'Help me build a high-converting website that drives sales and generates leads for my business.',
+        'Research industry review benchmarks. Find review platform priorities for your business type',
       avatar: '/Avatar/Growth Bot.mp4',
     },
     {
       id: 4,
-      title: 'Discover successful community engagement tactics',
-      description: 'Discover successful community engagement tactics by analyzing how local businesses connect, participate, and create memorable experiences that build loyalty and visibility.',
+      title: 'Research local search keywords customers actually use',
+      description: 'Analyse competitor SEO strategies',
+      category: 'Reputation',
+      color: 'blue',
+      helper: 'strategy-adviser',
+      prompt:
+        'Research local search keywords customers actually use. Analyse competitor SEO strategies',
+      avatar: '/Avatar/Strategy Advisor.mp4',
+    },
+    {
+      id: 5,
+      title: 'Identify community touchpoints and gathering spots',
+      description: 'Discover successful community engagement tactics',
       category: 'Local Celebrity',
-      color: 'green',
+      color: 'blue',
       helper: 'penn',
       prompt:
-        'Write compelling sales copy for my product that converts visitors into customers.',
+        'Identify community touchpoints and gathering spots. Discover successful community engagement tactics',
       avatar: '/Avatar/Copy Writer.mp4',
     },
   ]
-
 
   const router = useRouter()
 
@@ -129,12 +139,12 @@ export function UseCasesSection({ userId }: UseCasesSectionProps) {
         <h2 className="text-lg font-bold text-white sm:text-xl md:text-2xl">
           Use cases
         </h2>
-        {/* <button
+        <button
           onClick={() => setShowAll(!showAll)}
           className="font-medium text-white hover:text-gray-300"
         >
           {showAll ? 'See less' : 'See all'}
-        </button> */}
+        </button>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-4">

@@ -26,6 +26,12 @@ export async function GET(
         interval: true,
       },
     })
+    if (!existingSubscription) {
+      return NextResponse.json({
+        unlockedSoldiers: [],
+        hasValidSubscription: 'NOT_FOUND',
+      })
+    }
     const existingUnlockedSoldiers = await db.unlockSoldiers.findMany({
       where: {
         billingSubscriptionId: existingSubscription?.id,
@@ -37,6 +43,8 @@ export async function GET(
         interval: true,
       },
     })
+
+    console.log('Existing Subscription:', existingUnlockedSoldiers)
 
     const unlockedSoldiers =
       existingUnlockedSoldiers?.flatMap((item) => {
